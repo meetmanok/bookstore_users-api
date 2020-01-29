@@ -6,6 +6,7 @@ import (
 	"github.com/meetmanok/bookstore_users-api/services"
 	"github.com/meetmanok/bookstore_users-api/utils/errors"
 	"net/http"
+	"strconv"
 )
 
 func CreateUser(c *gin.Context) {
@@ -31,7 +32,20 @@ func CreateUser(c *gin.Context) {
 }
 
 func GetUser(c *gin.Context) {
-	c.JSON(http.StatusNotImplemented, gin.H{
-		"status": "Implement me!",
-	})
+	userID, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
+
+	if err != nil {
+		err := errors.NewBadRequestErr("user id should be a number")
+		c.JSON(err.Status, err)
+		return
+	}
+
+	result, geterr := services.GetUser(userID)
+
+	if geterr != nil {
+		c.JSON(geterr.Status, geterr)
+		return
+	}
+
+	c.JSON(http.StatusOK, result)
 }
