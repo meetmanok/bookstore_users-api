@@ -9,11 +9,11 @@ import (
 )
 
 const (
+	//mysql_users_username=root;mysql_users_password=root1234;mysql_users_host=127.0.0.1:3306;mysql_users_schema=users_db
 	mysql_users_username = "mysql_users_username"
 	mysql_users_password = "mysql_users_password"
 	mysql_users_host = "mysql_users_host"
 	mysql_users_schema = "mysql_users_schema"
-
 )
 
 var (

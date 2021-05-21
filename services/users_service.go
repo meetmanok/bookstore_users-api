@@ -15,11 +15,12 @@ type usersService struct {
 }
 
 type userServiceInterface interface {
-	GetUser(userId int64) (*users.User, *errors.RestErr)
-	CreateUser(user users.User) (*users.User, *errors.RestErr)
-	UpdateUser(isPartial bool, user users.User) (*users.User, *errors.RestErr)
-	DeleteUser(userId int64) *errors.RestErr
-	SearchUser(status string) (users.Users, *errors.RestErr)
+	GetUser(int64) (*users.User, *errors.RestErr)
+	CreateUser(users.User) (*users.User, *errors.RestErr)
+	UpdateUser(bool, users.User) (*users.User, *errors.RestErr)
+	DeleteUser(int64) *errors.RestErr
+	SearchUser(string) (users.Users, *errors.RestErr)
+	LoginUser(users.LoginRequest) (users.Users, *errors.RestErr)
 }
 
 func (us *usersService) GetUser(userId int64) (*users.User, *errors.RestErr) {
@@ -86,4 +87,16 @@ func (us *usersService) DeleteUser(userId int64) *errors.RestErr {
 func (us *usersService) SearchUser(status string) (users.Users, *errors.RestErr){
 	dao := &users.User{}
 	return dao.FindByStatus(status)
+}
+
+func (us *usersService) LoginUser(loginreq users.LoginRequest) (*users.User, *errors.RestErr){
+	dao := &users.User{
+		Email:loginreq.Email,
+		Password: crypto_utils.GetMD5(loginreq.Password),
+	}
+
+	if err := dao.FindByEmailAndPassword(); err != nil{
+		return nil, err
+	}
+	return dao, nil
 }
